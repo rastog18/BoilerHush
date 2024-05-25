@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block styles %}
+.spinner-border{
+width: 3rem;
+height: 3rem;
+position: absolute;
+top: 50%;
+}
+.body-text{
+color: white;
+text-align: left;
+}
+#info-holder{
+padding-left: 5%;
+padding-right: 5%;
+}
+#address {
+color: #9BA3AF;
+font-size: 12px;
+}
+.time{
+width: 50%;
+color: #18181B;
+text-align: center;
+font-size: 10px;
+margin-bottom: 0px;
+padding: 4px;
+border-radius: 5px;
+background: #87CEFA;
+@media (min-width: 768px) {
+width: 30%;
+}
+}
+#google-icon{
+@media (min-width: 576px) {
+margin-right: 0px;
+}
+@media (min-width: 768px) {
+margin-right: 30px;
+}
+@media (min-width: 992px) {
+margin-right: 20px;
+}
+@media (min-width: 1200px) {
+margin-right: 10px;
+}
+}
+
+{% endblock %}
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="row" id="info-holder" style="">
+        <div class="col-md-6 body-text">
+            <div class="row">
+                <div class="col-7 col-md-7 col-lg-8 col-xxl-9">
+                    {%set name = destination.rstrip("Purdue")%}
+                    <h4>{{name}}</h4>
+                    <p id="address" style="margin-bottom: 0px;">{{data["address"]}} st</p>
+                </div>
+                <div class="col-2 col-md-1" id="google-icon">
+                    {% set query = name.replace(' ','+') %}
+                    {% set url = "https://www.google.com/search?q=" + query%}
+                    <a href={{url}} class="btn btn-lg btn-outline-warning" role="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-google" viewBox="0 0 16 16" style="margin-bottom: 3px;">
+                            <path d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z"/>
+                        </svg>
+
+                    </a>
+                </div>
+                <div class="col-2 col-md-1">
+                    {% set query = name.replace(' ','+') %}
+                    {% set url = "https://www.google.com/maps/search/?api=1&query=Purdue+" + query%}
+                    <a href={{url}} class="btn btn-lg btn-outline-warning" role="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-geo-alt-fill" viewBox="0 0 16 16" style="margin-bottom: 3px;">
+                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
+                        </svg>
+                    </a>
+                </div>
+<!--                <p style="padding-right: 60px;">As a Boilermaker pursuing academic excellence, I pledge to be honest and-->
+<!--                    true in all that I do. Accountable together - We are Purdue.-->
+<!--                </p>-->
+            </div>
+            <span class="d-flex flex-row py-3">
+                    {% set time = data["Time"] %}
+                    {% if time.startswith('Closed')%}
+                        <p class="time" style="background: #fc7c7c; border: 1px solid #e90e0e;">{{time}}</p>
+                    {% else %}
+                        <p class="time">{{time}}</p>
+                    {% endif %}
+                </span>
+                <button type="button" class="btn btn-outline-info" style="" >As a Boilermaker pursuing academic excellence, I pledge to be honest and
+                    true in all that I do. Accountable together - We are Purdue.</button>
+        </div>
+        <div class="col-md-6">
+            <div class="rounded canvas-container row" style="width:100%;max-width:600px; background: #18181B;">
+                <canvas id="myChart" style="width:75%;max-width:600px; padding: 20px;"></canvas>
+            </div>
+            <div class="rounded canvas-container row" style="width:100%; margin-top: 10px;">
+                <div class="row" style="margin: auto; width: 100%; padding: 0px;">
+                    <div class="col rounded py-3" style="margin-right: 10px; background: #18181B;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="#87CEFA"
+                             class="bi bi-stopwatch-fill" viewBox="0 0 16 16">
+                            <path d="M6.5 0a.5.5 0 0 0 0 1H7v1.07A7.001 7.001 0 0 0 8 16a7 7 0 0 0 5.29-11.584l.013-.012.354-.354.353.354a.5.5 0 1 0 .707-.707l-1.414-1.415a.5.5 0 1 0-.707.707l.354.354-.354.354-.012.012A6.97 6.97 0 0 0 9 2.071V1h.5a.5.5 0 0 0 0-1zm2 5.6V9a.5.5 0 0 1-.5.5H4.5a.5.5 0 0 1 0-1h3V5.6a.5.5 0 1 1 1 0"/>
+                        </svg>
+                        <h6 style="margin-top: 10px; color: #87CEFA">5min</h6>
+                    </div>
+                    <div class="col rounded py-3" style=" background: #18181B; float: right;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="#87CEFA"
+                             class="bi bi-person-walking" viewBox="0 0 16 16">
+                            <path d="M9.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0M6.44 3.752A.75.75 0 0 1 7 3.5h1.445c.742 0 1.32.643 1.243 1.38l-.43 4.083a1.8 1.8 0 0 1-.088.395l-.318.906.213.242a.8.8 0 0 1 .114.175l2 4.25a.75.75 0 1 1-1.357.638l-1.956-4.154-1.68-1.921A.75.75 0 0 1 6 8.96l.138-2.613-.435.489-.464 2.786a.75.75 0 1 1-1.48-.246l.5-3a.75.75 0 0 1 .18-.375l2-2.25Z"/>
+                            <path d="M6.25 11.745v-1.418l1.204 1.375.261.524a.8.8 0 0 1-.12.231l-2.5 3.25a.75.75 0 1 1-1.19-.914zm4.22-4.215-.494-.494.205-1.843.006-.067 1.124 1.124h1.44a.75.75 0 0 1 0 1.5H11a.75.75 0 0 1-.531-.22Z"/>
+                        </svg>
+                        <h6 style="margin-top: 10px; color: #87CEFA">800m</h6>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+        var xValues = ['', '', '9a', '', '', '12p', '', '', '3p', '', '', '6p', '', '', '9p', '', ''];
+        var yValues = [55, 49, 44, 24, 15, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4];
+        var barColors = ["#87CEFA"]
+        new Chart("myChart", {
+          type: "bar",
+          data: {
+            labels: xValues,
+            datasets: [{
+              backgroundColor: "#87CE",
+              data: yValues
+            }]
+          },
+          options: {
+            legend: {display: false},
+            title: {
+              display: true,
+              fontColor: "white",
+              text: "Popular Times"
+            },
+            scales: {
+                xAxes: [{
+                    gridLines: {
+                        color: "rgba(200, 200, 200, 0.5)"
+                    }
+                }],
+                yAxes: [{
+                    gridLines: {
+                        color: "rgba(200, 200, 200, 0.5)"
+                    }
+                }]
+            }
+          }
+        });
+</script>
+{% endblock %}

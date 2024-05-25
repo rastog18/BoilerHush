@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block styles %}
+    .spinner-border{
+        width: 3rem;
+        height: 3rem;
+        position: absolute;
+        top: 50%;
+    }
+{% endblock %}
+{% block body %}
+    <div class="text-white spinner-border" role="status">
+        <span class="sr-only"></span>
+    </div>
+    <script>
+        console.log("Hello");
+        sleep();
+        console.log("Hello");
+        async function sleep() {
+          await new Promise(r => setTimeout(r, 12000));
+          window.location.href = "/where"
+        }
+    </script>
+{% endblock %}
